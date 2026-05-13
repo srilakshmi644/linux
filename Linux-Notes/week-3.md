@@ -4,6 +4,54 @@ The goal this week is helping them realize **almost everything in Linux is just 
 
 ---
 
+## Setup — Create Sample Files First
+
+Before any commands or tasks, have the learner create a `week3` practice folder with files that already contain known content. Copy-paste these into the terminal:
+
+```
+mkdir -p ~/week3 && cd ~/week3
+
+# A numbers file with 1000 lines
+seq 1 1000 > numbers.txt
+
+# A shopping list with 10 items, some containing "milk"
+cat > shopping.txt << 'EOF'
+milk
+bread
+eggs
+butter
+chocolate milk
+apples
+rice
+coffee
+sugar
+oat milk
+EOF
+
+# A diary file with the word "today" in some lines
+cat > diary.txt << 'EOF'
+today I went for a walk in the park
+the weather was warm and sunny
+today I cooked pasta for dinner
+I watched a movie in the evening
+today felt productive
+I read a chapter of my book
+tomorrow I want to wake up early
+EOF
+
+# A folder with 5 files, one containing "treasure"
+mkdir -p hunt
+echo "the sky is blue" > hunt/file1.txt
+echo "I like apples" > hunt/file2.txt
+echo "buried treasure lies here" > hunt/file3.txt
+echo "the cat sat on the mat" > hunt/file4.txt
+echo "hello world" > hunt/file5.txt
+```
+
+Now everything below will work as expected. All commands assume you're in `~/week3`.
+
+---
+
 ## Commands to Cover
 
 ### Viewing Files
@@ -50,21 +98,18 @@ The goal this week is helping them realize **almost everything in Linux is just 
 
 Give these one by one. Each takes 5–15 minutes.
 
-### 1. The Diary
-Create a file called `diary.txt` using `nano`. Write 5 sentences about their day. Save and exit. Then `cat` the file to confirm.
+### 1. The Diary Tour
+- `cat diary.txt` to see the whole file
+- `head -n 3 diary.txt` to see the first 3 lines
+- `tail -n 2 diary.txt` to see the last 2 lines
+- `wc -l diary.txt` to count how many lines it has
 
 ### 2. Peek and Skim
-Download a long text file (e.g., a public-domain book from Project Gutenberg) or generate one with:
-
-```
-seq 1 1000 > numbers.txt
-```
-
-Now have them:
-- View it with `cat` (and watch it fly by)
-- View it with `less` and scroll around
-- Show only the first 15 lines with `head -n 15`
-- Show only the last 5 lines with `tail -n 5`
+Use the `numbers.txt` file (1000 lines):
+- View it with `cat numbers.txt` (watch it fly by)
+- View it with `less numbers.txt` and scroll around (press `q` to quit)
+- Show only the first 15 lines with `head -n 15 numbers.txt`
+- Show only the last 5 lines with `tail -n 5 numbers.txt`
 
 ### 3. The Log Watcher
 In one terminal, run:
@@ -75,27 +120,31 @@ tail -f /var/log/syslog
 
 In another terminal, do something simple (e.g., `sudo apt update`). Watch the log update live. This teaches them that the system is always talking — they just have to listen.
 
-### 4. Word Hunt
-Using a text file of their choice (the diary works fine):
-- Count total lines with `wc -l`
-- Find all lines containing the word "today" using `grep`
-- Find them case-insensitively with `grep -i`
-- Show those lines **with line numbers** using `grep -n`
+> Note: on some systems the log file is `/var/log/messages` instead. If `syslog` doesn't exist, try that.
 
-### 5. Build a Shopping List
-Use `nano` to create `shopping.txt`. Add 10 items, one per line. Save. Then:
-- Use `grep` to find lines containing "milk"
-- Use `wc -l` to count how many items they have
-- Use `tail -n 3` to see the last 3 items
+### 4. Word Hunt in the Diary
+- Find all lines containing "today" with `grep "today" diary.txt`
+- Try the same case-insensitively with `grep -i "TODAY" diary.txt`
+- Show matching lines with line numbers using `grep -n "today" diary.txt`
+- Show lines that do **not** contain "today" with `grep -v "today" diary.txt`
 
-### 6. Append Practice
-- Use `echo "buy bread" >> shopping.txt` to add a new item
-- Verify with `cat`
-- Now overwrite the whole file with `echo "start over" > shopping.txt`
-- Talk about the difference between `>` and `>>` — one **replaces**, one **adds**
+### 5. Shopping List Search
+Using the pre-made `shopping.txt`:
+- Find all items containing "milk" with `grep "milk" shopping.txt`
+- Count how many items total with `wc -l shopping.txt`
+- Show the last 3 items with `tail -n 3 shopping.txt`
+
+### 6. Append vs Overwrite
+- Add an item with `echo "buy bread" >> shopping.txt`
+- Verify with `cat shopping.txt` — the new line should be at the end
+- Now overwrite the whole file: `echo "start over" > shopping.txt`
+- Run `cat shopping.txt` again — everything else is gone
+- Talk about the difference: `>` **replaces**, `>>` **adds**
+
+> Tip: regenerate the original shopping list by re-running the setup block if you want to keep practicing.
 
 ### 7. The Config File Tour
-Have them open (read-only is fine) a real config file:
+Have them open real config files in read-only mode:
 
 ```
 less /etc/hosts
@@ -105,25 +154,31 @@ less /etc/os-release
 Talk about what they see. The point isn't to understand every line — it's to realize **config files are just text files** they could edit if they wanted.
 
 ### 8. Find the Needle
-Create a folder with 5 text files. Put the word "treasure" inside one of them, somewhere in the middle. Have them find which file contains it using:
+Use the pre-made `hunt` folder. Find which file contains "treasure":
 
 ```
-grep -r "treasure" foldername
+grep -r "treasure" hunt/
 ```
+
+The output will show both the filename and the matching line. Explain how this works on huge codebases too — `grep -r` is one of the most-used commands in real life.
 
 ### 9. The Diff Drill
-- Copy `shopping.txt` to `shopping-v2.txt`
+- Copy the shopping list: `cp shopping.txt shopping-v2.txt`
+  - (First regenerate `shopping.txt` from the setup block if you overwrote it earlier)
 - Open `shopping-v2.txt` in `nano` and change 2 lines
 - Run `diff shopping.txt shopping-v2.txt`
 - Read the output together — this is how programmers track changes
 
-### 10. The Mini Journal
+### 10. The Mini Journal Project
 End the week with a small real-world project:
-- Create a folder called `journal`
-- Each day, create a new file like `2026-05-13.txt` using `nano`
-- Write a few lines
-- Use `ls` to see the growing collection
-- Use `grep -r "happy" journal/` to find all entries where they wrote about being happy
+- Create a folder called `journal`: `mkdir ~/journal`
+- Create today's entry: `nano ~/journal/2026-05-13.txt`
+- Write a few sentences — include the word "happy" somewhere
+- Do this for 2 or 3 different dates (use any date filenames)
+- Use `ls ~/journal` to see the collection grow
+- Use `grep -r "happy" ~/journal/` to find all entries where they wrote about being happy
+
+This is a real, useful thing they can keep doing forever. That's the point.
 
 ---
 
