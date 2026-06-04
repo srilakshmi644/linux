@@ -79,14 +79,38 @@ Now everything below will work as expected. All commands assume you're in `~/wee
 - `echo "more" >> file.txt` — append text to a file
 - `cat file.txt > copy.txt` — copy content via redirection
 
-### Editing with Nano
-- `nano file.txt` — open or create a file in nano
-- `Ctrl + O` — save (write Out)
-- `Ctrl + X` — exit
-- `Ctrl + K` — cut a line
-- `Ctrl + U` — paste a line
-- `Ctrl + W` — search inside the file
-- `Ctrl + G` — help screen
+### Editing with vi
+
+`vi` has two main modes — **Normal mode** (for commands and navigation) and **Insert mode** (for typing text). You start in Normal mode.
+
+**Opening and exiting**
+- `vi file.txt` — open or create a file
+- `i` — enter **Insert mode** (now you can type)
+- `Esc` — leave Insert mode, back to Normal mode
+- `:w` — save (write)
+- `:q` — quit
+- `:wq` — save and quit
+- `:q!` — quit **without** saving (discard changes)
+
+**Moving around (Normal mode)**
+- `h` `j` `k` `l` — left, down, up, right (arrow keys also work)
+- `0` — jump to start of line
+- `$` — jump to end of line
+- `gg` — go to top of file
+- `G` — go to bottom of file
+
+**Editing (Normal mode)**
+- `x` — delete the character under the cursor
+- `dd` — delete the whole line
+- `yy` — copy ("yank") the whole line
+- `p` — paste below the cursor
+- `u` — undo
+- `Ctrl + r` — redo
+
+**Searching**
+- `/word` — search forward for "word", press `Enter`
+- `n` — jump to next match
+- `N` — jump to previous match
 
 ### Comparing Files
 - `diff file1.txt file2.txt` — show differences between two files
@@ -143,17 +167,7 @@ Using the pre-made `shopping.txt`:
 
 > Tip: regenerate the original shopping list by re-running the setup block if you want to keep practicing.
 
-### 7. The Config File Tour
-Have them open real config files in read-only mode:
-
-```
-less /etc/hosts
-less /etc/os-release
-```
-
-Talk about what they see. The point isn't to understand every line — it's to realize **config files are just text files** they could edit if they wanted.
-
-### 8. Find the Needle
+### 7. Find the Needle
 Use the pre-made `hunt` folder. Find which file contains "treasure":
 
 ```
@@ -162,23 +176,12 @@ grep -r "treasure" hunt/
 
 The output will show both the filename and the matching line. Explain how this works on huge codebases too — `grep -r` is one of the most-used commands in real life.
 
-### 9. The Diff Drill
+### 8. The Diff Drill
 - Copy the shopping list: `cp shopping.txt shopping-v2.txt`
   - (First regenerate `shopping.txt` from the setup block if you overwrote it earlier)
 - Open `shopping-v2.txt` in `nano` and change 2 lines
 - Run `diff shopping.txt shopping-v2.txt`
 - Read the output together — this is how programmers track changes
-
-### 10. The Mini Journal Project
-End the week with a small real-world project:
-- Create a folder called `journal`: `mkdir ~/journal`
-- Create today's entry: `nano ~/journal/2026-05-13.txt`
-- Write a few sentences — include the word "happy" somewhere
-- Do this for 2 or 3 different dates (use any date filenames)
-- Use `ls ~/journal` to see the collection grow
-- Use `grep -r "happy" ~/journal/` to find all entries where they wrote about being happy
-
-This is a real, useful thing they can keep doing forever. That's the point.
 
 ---
 
